@@ -1,6 +1,6 @@
 #include "SampleReader.h"
 
-#include <SpiMessages.h>
+#include "SpiMessages.h"
 
 using namespace std;
 

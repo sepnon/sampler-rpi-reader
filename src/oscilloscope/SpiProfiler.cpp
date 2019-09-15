@@ -1,20 +1,21 @@
 #include "SpiProfiler.h"
-#include "driver.h"
+#include "SpiMessages.h"
 
 #include <iostream>
 
 using namespace std;
 using namespace std::chrono;
 
-SpiProfiler::SpiProfiler()
+SpiProfiler::SpiProfiler(Spi &spi)
+	: _spi(spi)
 {
-	transceive(COUNT);
+	_spi.transceive(COUNT);
 }
 
 void SpiProfiler::sendByte(uint8_t byte)
 {
 	const auto expected = nextExpectedByte();
-	const auto received = transceive(byte);
+	const auto received = _spi.transceive(byte);
 
 	_lastByteSent = byte;
 
@@ -30,7 +31,7 @@ void SpiProfiler::sendByte()
 
 SpiProfiler::~SpiProfiler()
 {
-	transceive(NO_CMD);
+	_spi.transceive(NO_CMD);
 }
 
 uint8_t SpiProfiler::nextExpectedByte() const
@@ -39,7 +40,8 @@ uint8_t SpiProfiler::nextExpectedByte() const
 }
 
 
-TimedSpiProfiler::TimedSpiProfiler(milliseconds duration)
+TimedSpiProfiler::TimedSpiProfiler(Spi &spi, milliseconds duration)
+	: _profiler(spi)
 {
 	const auto startTime = system_clock::now();
 	do {

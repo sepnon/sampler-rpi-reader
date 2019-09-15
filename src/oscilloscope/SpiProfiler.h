@@ -1,12 +1,13 @@
 #ifndef SPIPROFILER_H
 #define SPIPROFILER_H
 
+#include <avr_io/Spi.h>
 #include <chrono>
 
 class SpiProfiler
 {
 	public:
-		SpiProfiler();
+		SpiProfiler(Spi &spi);
 		~SpiProfiler();
 
 		void sendByte(uint8_t byte);
@@ -18,6 +19,8 @@ class SpiProfiler
 	private:
 		uint8_t nextExpectedByte() const;
 
+		Spi &_spi;
+
 		unsigned _errorCount = 0;
 		unsigned _byteCount = 0;
 		unsigned _lastByteSent = 0;
@@ -26,7 +29,7 @@ class SpiProfiler
 class TimedSpiProfiler
 {
 	public:
-		TimedSpiProfiler(std::chrono::milliseconds duration);
+		TimedSpiProfiler(Spi &spi, std::chrono::milliseconds duration);
 
 		void dump();
 

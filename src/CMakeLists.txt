@@ -4,6 +4,8 @@ project(AvrOscilloscope)
 
 set(CMAKE_VERBOSE_MAKEFILE on)
 
+include_directories(${PROJECT_SOURCE_DIR})
+
 set(source_files_oscilloscope_lib avr_io/Spi.cpp oscilloscope/SampleReader.cpp oscilloscope/SpiProfiler.cpp)
 set(source_files_spitool tools/SpiTool.cpp)
 set(source_files_server server/main.cpp server/datareader.cpp)

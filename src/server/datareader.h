@@ -3,6 +3,7 @@
 
 #include <thread>
 #include <vector>
+#include <avr_io/Spi.h>
 
 struct Sample
 {
@@ -13,7 +14,6 @@ struct Sample
 class DataReader
 {
 public:
-    DataReader();
     ~DataReader();
 
     void start();
@@ -25,6 +25,8 @@ private:
     void run();
     volatile bool _running = false;
     std::thread _thread;
+
+    Spi _spi;
 
     static constexpr auto BlocksCount = 32;
     std::array<std::vector<Sample>, BlocksCount> _data;

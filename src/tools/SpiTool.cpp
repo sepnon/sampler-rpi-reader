@@ -1,4 +1,4 @@
-#include "Spi.h"
+#include "avr_io/Spi.h"
 #include "oscilloscope/SpiProfiler.h"
 #include "oscilloscope/SampleReader.h"
 #include "oscilloscope/SpiMessages.h"
@@ -32,24 +32,39 @@ void printSamples(const vector<uint16_t> &samples)
 	cout << dec << endl;
 }
 
+void startSampling()
+{
+	cout << "Starting sampling.." << flush;
+	spi.transceive(START_SAMPLING);
+	cout << "Done" << endl;
+}
+
+void stopSampling()
+{
+	cout << "Stopping sampling.." << flush;
+	spi.transceive(STOP_SAMPLING);
+	cout << "Done" << endl;
+}
+
+void readSamplingState()
+{
+	spi.transceive(READ_STATUS);
+	cout << "Sampling state: " << flush << int(spi.transceive(NO_CMD)) << endl;
+}
+
 void parseArg(const char *arg)
 {
 	if (strcmp(arg, "start") == 0)
 	{
-		cout << "Starting sampling.." << flush;
-		spi.transceive(START_SAMPLING);
-		cout << "Done" << endl;
+		startSampling();
 	}
 	else if (strcmp(arg, "stop") == 0)
 	{
-		cout << "Stopping sampling.." << flush;
-		spi.transceive(STOP_SAMPLING);
-		cout << "Done" << endl;
+		stopSampling();
 	}
 	else if (strcmp(arg, "state") == 0)
 	{
-		spi.transceive(READ_STATUS);
-		cout << "Sampling state: " << flush << int(transceive(NO_CMD)) << endl;
+		readSamplingState();
 	}
 	else if (strcmp(arg, "zerobomb") == 0)
 	{
@@ -59,18 +74,18 @@ void parseArg(const char *arg)
 	}
 	else if (strcmp(arg, "read") == 0)
 	{
-		printSamples(SampleReader().read());
+		printSamples(SampleReader(spi).read());
 	}
 	else if (strcmp(arg, "readall") == 0)
 	{
-		SampleReader reader;
+		SampleReader reader(spi);
 		while(true)
 			printSamples(reader.read());
 
 	}
 	else if (strcmp(arg, "profileread") == 0)
 	{
-		SampleReader reader;
+		SampleReader reader(spi);
 		unsigned byteCount = 0;
 		unsigned zeroSizeReads = 0;
 		unsigned badBufferSize = 0;
@@ -108,13 +123,13 @@ void parseArg(const char *arg)
 	}
 	else if (strcmp(arg, "readbyte") == 0)
 	{
-		transceive(READ_BYTE);
+		spi.transceive(READ_BYTE);
 		cout << "Byte value: " << flush << int(spi.transceive(NO_CMD)) << endl;
 	}
 	else if (strcmp(arg, "profilespi") == 0)
 	{
 		cout << "Profiling SPI.." << endl;
-		TimedSpiProfiler(std::chrono::milliseconds(10'000)).dump();
+		TimedSpiProfiler(spi, std::chrono::milliseconds(10'000)).dump();
 	}
 	else
 		cout << "Unknown argument \"" << arg << "\"" << endl;
@@ -131,7 +146,7 @@ int main(int argc, const char **argv)
 
 		readSamplingState();
 
-		printSamples(SampleReader().read());
+		printSamples(SampleReader(spi).read());
 
 		stopSampling();
 

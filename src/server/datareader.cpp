@@ -4,17 +4,10 @@
 #include <chrono>
 #include <math.h>
 
-#include "SampleReader.h"
-#include "driver.h"
+#include "oscilloscope/SampleReader.h"
 
 using namespace std;
 using namespace std::chrono;
-
-DataReader::DataReader()
-{
-	init();
-	zeroBomb(512);
-}
 
 DataReader::~DataReader()
 {
@@ -47,7 +40,7 @@ std::vector<Sample> DataReader::samples()
 void DataReader::run()
 {
     _running = true;
-    SampleReader reader;
+    SampleReader reader(_spi);
     this_thread::sleep_for(milliseconds(100));
     const auto startTime = system_clock::now();
     unsigned byteCount = 0;

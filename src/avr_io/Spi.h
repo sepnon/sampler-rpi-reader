@@ -21,6 +21,6 @@ private:
 
 	int _channel;
 	int _fd;
-}
+};
 
 #endif // SPI_H
