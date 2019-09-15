@@ -1,0 +1,16 @@
+#ifndef SPIMESSAGES_H
+#define SPIMESSAGES_H
+
+enum COMMAND : uint8_t
+{
+	NO_CMD = 0,
+	START_SAMPLING = 1,
+	STOP_SAMPLING = 2,
+	READ_SAMPLES = 3,
+	READ_STATUS = 4,
+	COUNT = 10,
+	INC_BYTE = 20,
+	READ_BYTE = 21
+};
+
+#endif // SPIMESSAGES_H
