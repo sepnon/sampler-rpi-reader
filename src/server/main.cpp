@@ -14,7 +14,7 @@ int main()
     DataReader reader;
 
     try {
-	io_service io;
+		io_service io;
 
         ip::tcp::acceptor acceptor(io, ip::tcp::endpoint(ip::tcp::v4(), 9090));
 
@@ -40,7 +40,7 @@ int main()
                 cout << "Exception on write: " << e.what() << endl;
             }
 
-	    reader.stop();
+			reader.stop();
         }
     }
     catch (const exception &e) {

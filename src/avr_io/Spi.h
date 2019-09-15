@@ -6,14 +6,14 @@
 class Spi
 {
 public:
+	Spi(int mode = 0, int channel = 0);
+
+	uint8_t transceive(uint8_t byteToWrite);
+	
 	Spi(const Spi &) = delete;
 	Spi &operator=(const Spi &) = delete;
 	Spi(Spi &&) noexcept = default;
 	Spi &operator=(Spi &&) noexcept = default;
-
-	Spi(int mode = 0, int channel = 0);
-
-	uint8_t transceive(uint8_t byteToWrite);
 
 private:
 	void writeSpiMode(char mode);

@@ -1,6 +1,7 @@
 #include "Spi.h"
 #include "oscilloscope/SpiProfiler.h"
 #include "oscilloscope/SampleReader.h"
+#include "oscilloscope/SpiMessages.h"
 
 #include <iostream>
 #include <cstring>
@@ -11,6 +12,16 @@ using namespace std;
 using namespace std::chrono;
 
 Spi spi;
+
+void zeroBomb(unsigned count)
+{
+	cout << "Zero bomb" << endl;
+	while (count-- > 0)
+	{
+		cout << int(spi.transceive(0)) << "; ";
+	}
+	cout << "\n----" << endl;
+}
 
 void printSamples(const vector<uint16_t> &samples)
 {
@@ -26,18 +37,19 @@ void parseArg(const char *arg)
 	if (strcmp(arg, "start") == 0)
 	{
 		cout << "Starting sampling.." << flush;
-		startSampling();
+		spi.transceive(START_SAMPLING);
 		cout << "Done" << endl;
 	}
 	else if (strcmp(arg, "stop") == 0)
 	{
 		cout << "Stopping sampling.." << flush;
-		stopSampling();
+		spi.transceive(STOP_SAMPLING);
 		cout << "Done" << endl;
 	}
 	else if (strcmp(arg, "state") == 0)
 	{
-		cout << "Sampling state: " << flush << int(readSamplingState()) << endl;
+		spi.transceive(READ_STATUS);
+		cout << "Sampling state: " << flush << int(transceive(NO_CMD)) << endl;
 	}
 	else if (strcmp(arg, "zerobomb") == 0)
 	{
@@ -92,12 +104,12 @@ void parseArg(const char *arg)
 	else if (strcmp(arg, "incbyte") == 0)
 	{
 		cout << "Increment byte" << endl;
-		incByte();
+		spi.transceive(INC_BYTE);
 	}
 	else if (strcmp(arg, "readbyte") == 0)
 	{
-		readByte();
-		cout << "Byte value: " << flush << int(readByte()) << endl;
+		transceive(READ_BYTE);
+		cout << "Byte value: " << flush << int(spi.transceive(NO_CMD)) << endl;
 	}
 	else if (strcmp(arg, "profilespi") == 0)
 	{

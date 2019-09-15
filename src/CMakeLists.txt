@@ -4,14 +4,14 @@ project(AvrOscilloscope)
 
 set(CMAKE_VERBOSE_MAKEFILE on)
 
-set(source_files_oscilloscope_api driver.cpp SampleReader.cpp SpiProfiler.cpp)
-set(source_files_spi SpiTool.cpp)
+set(source_files_oscilloscope_lib avr_io/Spi.cpp oscilloscope/SampleReader.cpp oscilloscope/SpiProfiler.cpp)
+set(source_files_spitool tools/SpiTool.cpp)
 set(source_files_server server/main.cpp server/datareader.cpp)
 
-add_library(oscilloscope_lib ${source_files_oscilloscope_api})
+add_library(oscilloscope_lib ${source_files_oscilloscope_lib})
 target_link_libraries(oscilloscope_lib wiringPi)
 
-add_executable(spitool ${source_files_spi})
+add_executable(spitool ${source_files_spitool})
 target_link_libraries(spitool oscilloscope_lib)
 
 add_executable(sampleserver ${source_files_server})

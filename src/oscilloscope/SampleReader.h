@@ -1,19 +1,21 @@
 #ifndef SAMPLEREADER_H
 #define SAMPLEREADER_H
 
-#include <avr_io/AvrSpiIo.h>
+#include <avr_io/Spi.h>
 #include <vector>
 
 class SampleReader
 {
 	public:
-		SampleReader(AvrSpiIo &avrSpi);
+		SampleReader(Spi &avrSpi);
 		~SampleReader();
 
 		std::vector<uint16_t> read();
 
 	private:
-		AvrSpiIo &_avrSpi;
+		std::vector<uint16_t> read(uint8_t byteToSend);
+		
+		Spi &_avrSpi;
 };
 
 #endif // SAMPLEREADER_H
